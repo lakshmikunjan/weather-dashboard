@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌤️ Weather Dashboard</h1>
+            <p>Get current weather and 5-day forecasts for any city</p>
+        </header>
+
+        <div class="search-section">
+            <input 
+                type="text" 
+                id="cityInput" 
+                placeholder="Enter city name (e.g., New York, London)"
+            >
+            <button id="searchBtn">Search</button>
+        </div>
+
+        <div class="alert-settings">
+            <h3>Temperature Alerts</h3>
+            <div class="alert-inputs">
+                <label>
+                    Alert when temperature exceeds:
+                    <input type="number" id="maxTemp" value="90">°F
+                </label>
+                <label>
+                    Alert when temperature falls below:
+                    <input type="number" id="minTemp" value="32">°F
+                </label>
+            </div>
+        </div>
+
+        <div id="alertBanner" class="alert-banner hidden"></div>
+
+        <div id="currentWeather" class="weather-card hidden">
+            <h2>Current Weather</h2>
+            <div class="current-weather-content">
+                <div class="weather-main">
+                    <h3 id="cityName"></h3>
+                    <div class="temp-display">
+                        <span id="temperature"></span>
+                        <img id="weatherIcon" src="" alt="Weather icon">
+                    </div>
+                    <p id="description"></p>
+                </div>
+                <div class="weather-details">
+                    <div class="detail">
+                        <span class="label">Feels Like:</span>
+                        <span id="feelsLike"></span>
+                    </div>
+                    <div class="detail">
+                        <span class="label">Humidity:</span>
+                        <span id="humidity"></span>
+                    </div>
+                    <div class="detail">
+                        <span class="label">Wind Speed:</span>
+                        <span id="windSpeed"></span>
+                    </div>
+                    <div class="detail">
+                        <span class="label">Pressure:</span>
+                        <span id="pressure"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="forecast" class="forecast-section hidden">
+            <h2>5-Day Forecast</h2>
+            <div id="forecastCards" class="forecast-cards"></div>
+        </div>
+
+        <div id="errorMessage" class="error-message hidden"></div>
+
+        <div id="loading" class="loading hidden">
+            <div class="spinner"></div>
+            <p>Loading weather data...</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
