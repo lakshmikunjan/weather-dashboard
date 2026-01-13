@@ -7,12 +7,13 @@ const loading = document.getElementById('loading');
 const alertBanner = document.getElementById('alertBanner');
 const maxTempInput = document.getElementById('maxTemp');
 const minTempInput = document.getElementById('minTemp');
+const locationBtn = document.getElementById('locationBtn');
 
 searchBtn.addEventListener('click', handleSearch);
 cityInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') handleSearch();
 });
-
+locationBtn.addEventListener('click', handleLocationSearch);
 async function handleSearch() {
     const city = cityInput.value.trim();
     
@@ -136,4 +137,97 @@ function hideAll() {
     forecast.classList.add('hidden');
     errorMessage.classList.add('hidden');
     alertBanner.classList.add('hidden');
+}
+// Handle location-based search
+async function handleLocationSearch() {
+    // Check if geolocation is supported
+    if (!navigator.geolocation) {
+        showError('Geolocation is not supported by your browser');
+        return;
+    }
+    
+    locationBtn.disabled = true;
+    locationBtn.textContent = '📍 Getting location...';
+    hideAll();
+    showLoading();
+    
+    // Get user's position
+    navigator.geolocation.getCurrentPosition(
+        async (position) => {
+            const { latitude, longitude } = position.coords;
+            
+            try {
+                await Promise.all([
+                    fetchWeatherByCoordinates(latitude, longitude),
+                    fetchForecastByCoordinates(latitude, longitude)
+                ]);
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                hideLoading();
+                locationBtn.disabled = false;
+                locationBtn.textContent = '📍 My Location';
+            }
+        },
+        (error) => {
+            hideLoading();
+            locationBtn.disabled = false;
+            locationBtn.textContent = '📍 My Location';
+            
+            // Handle different error types
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    showError('Location access denied. Please enable location permissions in your browser settings.');
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    showError('Location information is unavailable.');
+                    break;
+                case error.TIMEOUT:
+                    showError('Location request timed out. Please try again.');
+                    break;
+                default:
+                    showError('An error occurred while getting your location.');
+            }
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+        }
+    );
+}
+
+// Fetch weather by coordinates
+async function fetchWeatherByCoordinates(lat, lon) {
+    try {
+        const response = await fetch(`/api/weather/coordinates/${lat}/${lon}`);
+        
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Failed to fetch weather data');
+        }
+        
+        const data = await response.json();
+        displayCurrentWeather(data);
+        checkTemperatureAlerts(data.main.temp);
+    } catch (error) {
+        throw error;
+    }
+}
+
+// Fetch forecast by coordinates
+async function fetchForecastByCoordinates(lat, lon) {
+    try {
+        const response = await fetch(`/api/weather/forecast-coordinates/${lat}/${lon}`);
+        
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Failed to fetch forecast data');
+        }
+        
+        const data = await response.json();
+        displayForecast(data);
+    } catch (error) {
+        throw error;
+    }
 }

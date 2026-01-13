@@ -40,14 +40,43 @@ header p {
     font-weight: 300;
 }
 
-/* Search Section */
 .search-section {
     display: flex;
     gap: 15px;
     margin-bottom: 30px;
-    max-width: 700px;
+    max-width: 800px;
     margin-left: auto;
     margin-right: auto;
+    align-items: center;
+}
+
+#locationBtn {
+    padding: 18px 28px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+    white-space: nowrap;
+}
+
+#locationBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+}
+
+#locationBtn:active {
+    transform: translateY(0);
+}
+
+#locationBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
 }
 
 #cityInput {

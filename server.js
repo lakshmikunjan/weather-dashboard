@@ -47,7 +47,49 @@ app.get('/api/weather/forecast/:city', async (req, res) => {
         });
     }
 });
+// API endpoint to get weather by coordinates
+app.get('/api/weather/coordinates/:lat/:lon', async (req, res) => {
+    try {
+        const { lat, lon } = req.params;
+        const apiKey = process.env.OPENWEATHER_API_KEY;
+        
+        const response = await axios.get(
+            `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=imperial`
+        );
+        
+        res.json(response.data);
+    } catch (error) {
+        console.error('Error fetching weather by coordinates:', error.message);
+        res.status(error.response?.status || 500).json({ 
+            error: 'Failed to fetch weather data',
+            message: error.response?.data?.message || 'Location not found'
+        });
+    }
+});
 
+// API endpoint to get forecast by coordinates
+app.get('/api/weather/forecast-coordinates/:lat/:lon', async (req, res) => {
+    try {
+        const { lat, lon } = req.params;
+        const apiKey = process.env.OPENWEATHER_API_KEY;
+        
+        const response = await axios.get(
+            `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=imperial`
+        );
+        
+        res.json(response.data);
+    } catch (error) {
+        console.error('Error fetching forecast by coordinates:', error.message);
+        res.status(error.response?.status || 500).json({ 
+            error: 'Failed to fetch forecast data',
+            message: error.response?.data?.message || 'Location not found'
+        });
+    }
+});
+
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+});
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
