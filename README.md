@@ -158,5 +158,3 @@ This project is [MIT](LICENSE) licensed.
 - Inspired by modern weather applications
 
 ---
-
-If you found this project helpful, please consider giving it a star on GitHub.
