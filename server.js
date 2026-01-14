@@ -23,6 +23,14 @@ try {
 } catch (error) {
     console.error('✗ Error loading auth routes:', error.message);
 }
+// Import favorites and alerts routes
+const favoritesRoutes = require('./routes/favorites');
+const alertsRoutes = require('./routes/alerts');
+
+// Use favorites and alerts routes
+app.use('/api/favorites', favoritesRoutes);
+app.use('/api/alerts', alertsRoutes);
+console.log('✓ Favorites and alerts routes registered');
 
 app.get('/api/weather/current/:city', async (req, res) => {
     try {
