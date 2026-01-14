@@ -2,6 +2,7 @@ const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
 require('dotenv').config();
+const { testConnection, initializeDatabase } = require('./db/database');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -87,9 +88,26 @@ app.get('/api/weather/forecast-coordinates/:lat/:lon', async (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-});
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-});
+// Initialize database and start server
+async function startServer() {
+    try {
+        // Test database connection
+        const dbConnected = await testConnection();
+        if (!dbConnected) {
+            throw new Error('Could not connect to database');
+        }
+        
+        // Initialize database tables
+        await initializeDatabase();
+        
+        // Start server
+        app.listen(PORT, () => {
+            console.log(`✓ Server running on http://localhost:${PORT}`);
+        });
+    } catch (error) {
+        console.error('Failed to start server:', error);
+        process.exit(1);
+    }
+}
+
+startServer();
