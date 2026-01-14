@@ -11,6 +11,19 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
+// Import auth routes
+console.log('Loading auth routes...');
+try {
+    const authRoutes = require('./routes/auth');
+    console.log('✓ Auth routes loaded successfully');
+    
+    // Use auth routes
+    app.use('/api/auth', authRoutes);
+    console.log('✓ Auth routes registered at /api/auth');
+} catch (error) {
+    console.error('✗ Error loading auth routes:', error.message);
+}
+
 app.get('/api/weather/current/:city', async (req, res) => {
     try {
         const { city } = req.params;
