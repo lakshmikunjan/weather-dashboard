@@ -11,6 +11,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
+const cron = require('node-cron');
+const { checkAllAlerts } = require('./services/weatherMonitor');
+
 // Import auth routes
 console.log('Loading auth routes...');
 try {
@@ -120,6 +123,18 @@ async function startServer() {
         
         // Initialize database tables
         await initializeDatabase();
+        
+        // Start background job - check weather alerts every hour
+        console.log('✓ Starting weather alert monitor...');
+        cron.schedule('0 * * * *', () => {
+            console.log('Running scheduled weather alert check');
+            checkAllAlerts();
+        });
+        console.log('✓ Weather alert monitor scheduled (runs every hour)');
+        
+        // Run once on startup for testing
+        console.log('✓ Running initial weather check...');
+        setTimeout(() => checkAllAlerts(), 5000); // Wait 5 seconds after startup
         
         // Start server
         app.listen(PORT, () => {
